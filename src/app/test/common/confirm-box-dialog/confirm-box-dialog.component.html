@@ -1,0 +1,8 @@
+<div mat-dialog-content>
+    <h3>Do you want to <b>delete</b> this item?</h3>
+    <p>It will be delete permanently from our database</p>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button class="mat-accent mr-16" (click)="dialogRef.close(true)">Confirm</button>
+    <button mat-button (click)="dialogRef.close(false)">Cancel</button>
+</div>
