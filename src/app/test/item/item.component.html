@@ -1,9 +1,19 @@
 <div class="container">
     <mat-toolbar>
         <span>My Simple Application</span>
-        <button (click)="openDialog()" matRipple mat-raised-button><mat-icon fontIcon="add"
-                style="font-size: 22px;">add</mat-icon>
-            Add New</button>
+        <div>
+            <button *ngIf="typeTableBody.length > 0" (click)="onCreatePdf('view') " matRipple mat-raised-button
+                style="margin-right: 10px;"><mat-icon fontIcon="download"
+                    style="font-size: 22px;">visibilityicon</mat-icon>
+                View PDF</button>
+
+            <button *ngIf="typeTableBody.length > 0" (click)="onCreatePdf('download') " matRipple mat-raised-button
+                style="margin-right: 10px;"><mat-icon fontIcon="download" style="font-size: 22px;">download</mat-icon>
+                Download PDF</button>
+            <button (click)="openDialog()" matRipple mat-raised-button><mat-icon fontIcon="add"
+                    style="font-size: 22px;">add</mat-icon>
+                Add New</button>
+        </div>
     </mat-toolbar>
     <mat-card *ngIf="typeTableBody.length == 0">
         <mat-card-content>Data is not avialable!</mat-card-content>
@@ -12,31 +22,31 @@
 
 
 
-    <table *ngIf="typeTableBody.length > 0">
+    <table *ngIf="typeTableBody.length > 0" id="my-table">
         <tr>
             <th>SL.NO</th>
             <th>Type Name</th>
             <th>Items Name</th>
             <th>Action</th>
         </tr>
-        <tr *ngFor="let data of typeTableBody; let i = index">
+        <tr *ngFor="let data of typeTableBody | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index">
             <td>{{i+1}}</td>
             <td>{{data.typeName}}</td>
             <td>{{data.itemName}}</td>
             <td>
                 <div class="action-editdlt">
-                    <button class="edit-dlt" mat-icon-button color="primary" (click)="handleEdit(data, i)">
-                        <mat-icon>editoff </mat-icon></button>
-                    <button class="edit-dlt" mat-icon-button color="warn"
-                        (click)="handleDelete(data,i)"><mat-icon>deleteforever
-                        </mat-icon></button>
+                    <button matRipple class="edit-dlt" (click)="handleEdit(data, i)">
+                        <i class="fa-regular fa-pen-to-square"></i> Edit </button>
+                    <button matRipple class="edit-dlt" (click)="handleDelete(data,i)">
+                        <i class="fa-solid fa-trash"></i>Delete
+                    </button>
                 </div>
             </td>
         </tr>
     </table>
-    <div style="border: 1px solid rgb(234, 234, 234); text-align: left; width: 100%;">
-        <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page">
-        </mat-paginator>
+    <div *ngIf="typeTableBody.length > 0" style="border: 1px solid rgb(234, 234, 234); text-align: left; width: 100%;">
+
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
 
 

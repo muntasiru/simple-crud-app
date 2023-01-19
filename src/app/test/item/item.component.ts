@@ -3,17 +3,14 @@ import { ConfirmBoxDialogComponent } from './../common/confirm-box-dialog/confir
 import { ToastrService } from 'ngx-toastr';
 import {
   Component,
-  AfterViewInit,
   ViewChild,
   OnInit,
   Inject,
+  ElementRef,
 } from '@angular/core';
-import {
-  FormControl,
-  Validators,
-  FormBuilder,
-  FormGroup,
-} from '@angular/forms';
+import jsPDF from 'jspdf'; // js pdf
+import 'jspdf-autotable'; // pdf auto table
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -21,27 +18,22 @@ import {
   MatDialogConfig,
 } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
 @Component({
   selector: 'app-item',
   templateUrl: './item.component.html',
   styleUrls: ['./item.component.css'],
 })
 export class ItemComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'typeName', 'itemName', 'action'];
-
-  typeTableBody: any = [];
+  displayedColumns: string[] = ['position', 'typeName', 'itemName', 'action']; // table columns
+  typeTableBody: any = []; //all item list
   dataSource!: MatTableDataSource<any>;
-  updataData: string;
-  @Inject(MAT_DIALOG_DATA) public editData: any;
-  // @ViewChild(MatPaginator) paginator: MatPaginator;
+  p: number = 1;
+  updataData: string; // after update
+  @Inject(MAT_DIALOG_DATA) public editData: any; //inject dialog data
+  @ViewChild('my-table', { static: false }) el!: ElementRef; //html table refference
 
-  constructor(
-    public dialog: MatDialog,
-    private data: ItemConfigService,
-    private toastr: ToastrService
-  ) {}
-
+  constructor(public dialog: MatDialog, private toastr: ToastrService) {}
+  //dialog open
   openDialog() {
     this.dialog
       .open(DialogElementsExampleDialog)
@@ -50,7 +42,6 @@ export class ItemComponent implements OnInit {
         this.getAllItems();
       });
   }
-
   ngOnInit(): void {
     const oldRecord = localStorage.getItem('itemList');
     if (oldRecord) {
@@ -58,14 +49,14 @@ export class ItemComponent implements OnInit {
       console.log(JSON.parse(oldRecord));
     }
   }
-
+  // get all item from local
   getAllItems() {
     const oldRecord = localStorage.getItem('itemList');
     if (oldRecord) {
       this.typeTableBody = JSON.parse(oldRecord);
     }
   }
-
+  //delete item
   handleDelete(row, i) {
     console.log('dlt');
     const dialogConfig = new MatDialogConfig();
@@ -93,6 +84,7 @@ export class ItemComponent implements OnInit {
         }
       });
   }
+  //edit item
   handleEdit(row: any, i: any) {
     this.dialog
       .open(DialogElementsExampleDialog, {
@@ -103,6 +95,17 @@ export class ItemComponent implements OnInit {
         this.getAllItems();
       });
   }
+  // create and view pdf
+  onCreatePdf(action) {
+    var doc = new jsPDF();
+    (doc as any).autoTable({ html: '#my-table' });
+    // (doc as any).autoTable(columns, [this.typeTableBody]);
+    if (action == 'download') {
+      doc.save('angular-demo.pdf');
+    } else {
+      doc.output('dataurlnewwindow');
+    }
+  }
 }
 export interface PeriodicElement {
   name: string;
@@ -111,11 +114,11 @@ export interface PeriodicElement {
   action: string;
 }
 
-// dialogo component
+////////////dialog ////////////
 
 @Component({
   selector: 'dialog-elements-example-dialog',
-  templateUrl: '../common/common-modal/dialog-elements-example-dialog.html',
+  templateUrl: './dialog-elements-example-dialog.html',
   styleUrls: ['./item.component.css'],
 })
 export class DialogElementsExampleDialog {
@@ -125,10 +128,10 @@ export class DialogElementsExampleDialog {
   selectFormControl = new FormControl('', Validators.required);
   types = ['Dog', 'Cat', 'Cow', 'Fox'];
   typeTableBody = [];
-
   actionBtn: string = 'Save';
   modalHeader: string = 'Add configuration';
   error: string = '';
+
   constructor(
     public dialogRef: MatDialogRef<DialogElementsExampleDialog>,
     private formBuilder: FormBuilder,
@@ -148,13 +151,14 @@ export class DialogElementsExampleDialog {
       this.type.controls['itemName'].setValue(this.editData.itemName);
     }
   }
-
+  //get item
   getAllItems() {
     const oldRecord = localStorage.getItem('itemList');
     if (oldRecord) {
       this.typeTableBody = JSON.parse(oldRecord);
     }
   }
+  //save item
   saveItemTypesData() {
     if (!this.editData) {
       if (this.type.value.typeName && this.type.value.itemName) {
@@ -183,7 +187,7 @@ export class DialogElementsExampleDialog {
       this.updateTypeConfig(this.type.value);
     }
   }
-
+  //update item
   updateTypeConfig(data) {
     const clickId = this.editData.id + 1;
     const updateData = { ...data, id: clickId };
@@ -200,13 +204,11 @@ export class DialogElementsExampleDialog {
 
     this.onNoClick();
   }
-
-  handleDelete(data, i) {}
-
+  //remove modal
   onNoClick(): void {
     this.dialogRef.close();
   }
-
+  //set item id
   getItemId() {
     const oldRecord = localStorage.getItem('itemList');
     if (oldRecord !== null) {
