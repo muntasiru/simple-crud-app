@@ -29,8 +29,9 @@
             <th>Items Name</th>
             <th>Action</th>
         </tr>
-        <tr *ngFor="let data of typeTableBody | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index">
-            <td>{{i+1}}</td>
+        <tr
+            *ngFor="let data of typeTableBody | paginate: { itemsPerPage: 5, currentPage: p,totalItems: typeTableBody.length } ; let i = index">
+            <td>{{1+i}}</td>
             <td>{{data.typeName}}</td>
             <td>{{data.itemName}}</td>
             <td>

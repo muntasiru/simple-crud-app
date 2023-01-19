@@ -27,10 +27,12 @@ export class ItemComponent implements OnInit {
   displayedColumns: string[] = ['position', 'typeName', 'itemName', 'action']; // table columns
   typeTableBody: any = []; //all item list
   dataSource!: MatTableDataSource<any>;
-  p: number = 1;
+  p: any = 1;
+  currentIndex: number = 0;
   updataData: string; // after update
   @Inject(MAT_DIALOG_DATA) public editData: any; //inject dialog data
   @ViewChild('my-table', { static: false }) el!: ElementRef; //html table refference
+  nextPage = false;
 
   constructor(public dialog: MatDialog, private toastr: ToastrService) {}
   //dialog open
@@ -48,6 +50,7 @@ export class ItemComponent implements OnInit {
       this.typeTableBody = JSON.parse(oldRecord);
       console.log(JSON.parse(oldRecord));
     }
+    console.log(this.currentIndex);
   }
   // get all item from local
   getAllItems() {
