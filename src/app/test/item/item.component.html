@@ -16,7 +16,11 @@
         </div>
     </mat-toolbar>
     <mat-card *ngIf="typeTableBody.length == 0">
-        <mat-card-content>Data is not avialable!</mat-card-content>
+
+        <mat-card-content>Data is not avialable!
+            <i class="fa-regular fa-face-sleepy"></i>
+        </mat-card-content>
+
     </mat-card>
 
 
@@ -25,27 +29,41 @@
     <table *ngIf="typeTableBody.length > 0" id="my-table">
         <tr>
             <th>SL.NO</th>
-            <th>Type Name</th>
-            <th>Items Name</th>
-            <th>Action</th>
+            <th>Category</th>
+            <th>Product Name</th>
+            <th>Price (TK.)</th>
+            <th>Discount (TK.)</th>
+            <th>Total (TK.)</th>
         </tr>
         <tr *ngFor="let data of typeTableBody | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index">
             <td>{{i+1}}</td>
             <td>{{data.typeName}}</td>
-            <td>{{data.itemName}}</td>
+            <td>{{data.productName}}</td>
+            <td>{{data.price}}</td>
+            <td>{{data.discount}}</td>
+            <td>{{data.total}}</td>
             <td>
                 <div class="action-editdlt">
                     <button matRipple class="edit-dlt" (click)="handleEdit(data, i)">
-                        <i class="fa-regular fa-pen-to-square"></i> Edit </button>
+                        <i class="fa-regular fa-pen-to-square"></i></button>
                     <button matRipple class="edit-dlt" (click)="handleDelete(data,i)">
-                        <i class="fa-solid fa-trash"></i>Delete
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </td>
         </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total:{{noDiscount}}tk</th>
+            <th>Discount: {{totalDiscount}}tk</th>
+            <th>Total: {{withDiscount}}tk</th>
+            <th></th>
+        </tr>
     </table>
-    <div *ngIf="typeTableBody.length > 0" style="border: 1px solid rgb(234, 234, 234); text-align: left; width: 100%;">
 
+    <div *ngIf="typeTableBody.length > 0" style="border: 1px solid rgb(234, 234, 234); text-align: left; width: 100%;">
         <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
 
