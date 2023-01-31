@@ -21,4 +21,6 @@ export class ConfirmBoxDialogComponent {
   ) {
     this.confirmMessage = data.confirmMessage;
   }
+
+  
 }

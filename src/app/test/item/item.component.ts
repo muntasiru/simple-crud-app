@@ -43,11 +43,7 @@ export class ItemComponent implements OnInit {
   withDiscount: number;
   totalDiscount: number;
 
-  constructor(
-    public dialog: MatDialog,
-    private toastr: ToastrService,
-    private totalPrice: ItemConfigService
-  ) {}
+  constructor(public dialog: MatDialog, private toastr: ToastrService) {}
   //dialog open
   openDialog() {
     this.dialog
@@ -179,7 +175,6 @@ export class DialogElementsExampleDialog {
     public dialogRef: MatDialogRef<DialogElementsExampleDialog>,
     private formBuilder: FormBuilder,
     private data: ItemConfigService,
-    private totalPrice: ItemConfigService,
     private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) public editData: any
   ) {}
