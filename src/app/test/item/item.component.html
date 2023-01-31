@@ -35,8 +35,9 @@
             <th>Discount (TK.)</th>
             <th>Total (TK.)</th>
         </tr>
-        <tr *ngFor="let data of typeTableBody | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index">
-            <td>{{i+1}}</td>
+        <tr
+            *ngFor="let data of typeTableBody | paginate: { itemsPerPage: 5, currentPage: p,totalItems: typeTableBody.length } ; let i = index">
+            <td>{{1+i}}</td>
             <td>{{data.typeName}}</td>
             <td>{{data.productName}}</td>
             <td>{{data.price}}</td>
