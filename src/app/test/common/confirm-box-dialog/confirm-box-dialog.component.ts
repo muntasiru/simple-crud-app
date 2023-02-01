@@ -19,8 +19,6 @@ export class ConfirmBoxDialogComponent {
     @Inject(MAT_DIALOG_DATA) data: any,
     @Inject(MAT_DIALOG_DATA) public editData: any
   ) {
-    this.confirmMessage = data.confirmMessage;
+    this.confirmMessage = data.productName;
   }
-
-  
 }

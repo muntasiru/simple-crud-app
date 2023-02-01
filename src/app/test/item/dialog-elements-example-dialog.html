@@ -3,17 +3,6 @@
 
   <div class="modal-content" style="width: 400px;">
     <form [formGroup]="type" style="display: flex; flex-direction: column;">
-      <mat-form-field appearance="fill">
-        <mat-label>Choose an option</mat-label>
-        <mat-select [(value)]="selected" formControlName="typeName" placeholder="Select Category">
-          <mat-option value="option1">Select Category</mat-option>
-          <mat-option *ngFor="let types of types" [value]="types">
-            {{types}}
-          </mat-option>
-        </mat-select>
-        <!-- <mat-error *ngIf="typesControl.hasError('required')">Please choose a category</mat-error> -->
-      </mat-form-field>
-
       <input style="border: 1px solid rgb(213, 213, 213); padding: 10px 15px; border-radius: 5px;"
         formControlName="productName" type="text" placeholder="Product name">
       <div style="display: flex; gap: 15px;margin-top: 15px;">

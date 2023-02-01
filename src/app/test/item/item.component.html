@@ -28,17 +28,15 @@
 
     <table *ngIf="typeTableBody.length > 0" id="my-table">
         <tr>
-            <th>SL.NO</th>
-            <th>Category</th>
-            <th>Product Name</th>
+            <th class="main-th"> <span class="divider"></span> <span class="bottom">Item</span><span
+                    class="top">Price</span></th>
             <th>Price (TK.)</th>
             <th>Discount (TK.)</th>
             <th>Total (TK.)</th>
+            <th></th>
         </tr>
         <tr
             *ngFor="let data of typeTableBody | paginate: { itemsPerPage: 5, currentPage: p,totalItems: typeTableBody.length } ; let i = index">
-            <td>{{1+i}}</td>
-            <td>{{data.typeName}}</td>
             <td>{{data.productName}}</td>
             <td>{{data.price}}</td>
             <td>{{data.discount}}</td>
@@ -54,12 +52,10 @@
             </td>
         </tr>
         <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th>Total:{{noDiscount}}tk</th>
-            <th>Discount: {{totalDiscount}}tk</th>
-            <th>Total: {{withDiscount}}tk</th>
+            <th>Total:</th>
+            <th>{{noDiscount}}tk</th>
+            <th>{{totalDiscount}}tk</th>
+            <th>{{withDiscount}}tk</th>
             <th></th>
         </tr>
     </table>

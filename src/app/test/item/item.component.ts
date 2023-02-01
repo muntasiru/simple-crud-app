@@ -24,14 +24,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./item.component.css'],
 })
 export class ItemComponent implements OnInit {
-  displayedColumns: string[] = [
-    'position',
-    'typeName',
-    'productName',
-    'price',
-    'discount',
-    'total',
-  ]; // table columns
+  displayedColumns: string[] = ['productName', 'price', 'discount', 'total']; // table columns
   typeTableBody: any = []; //all item list
   dataSource!: MatTableDataSource<any>;
   p: any = 1;
@@ -76,11 +69,10 @@ export class ItemComponent implements OnInit {
   }
   //delete item
   handleDelete(row, i) {
-    console.log('dlt');
+    console.log('dlt', row);
     const dialogConfig = new MatDialogConfig();
-    console.log(dialogConfig);
     dialogConfig.data = {
-      confirmMessage: 'Are you sure you want to Delete?',
+      confirmMessage: `Are you sure you want to Delete ${row.productName}? `,
     };
     this.dialog
       .open(ConfirmBoxDialogComponent, {
@@ -181,7 +173,6 @@ export class DialogElementsExampleDialog {
   ) {}
   ngOnInit(): void {
     this.type = this.formBuilder.group({
-      typeName: ['', Validators.required],
       productName: ['', Validators.required],
       price: ['', Validators.required],
       discount: ['', Validators.required],
@@ -190,7 +181,6 @@ export class DialogElementsExampleDialog {
     if (this.editData) {
       this.actionBtn = 'Update';
       this.modalHeader = 'Update configuration';
-      this.type.controls['typeName'].setValue(this.editData.typeName);
       this.type.controls['productName'].setValue(this.editData.productName);
       this.type.controls['price'].setValue(this.editData.price);
       this.type.controls['discount'].setValue(this.editData.discount);
@@ -207,7 +197,7 @@ export class DialogElementsExampleDialog {
   //save item
   saveItemTypesData() {
     if (!this.editData) {
-      if (this.type.value.typeName && this.type.value.productName) {
+      if (this.type.value.productName) {
         this.data.changeMessage(this.type.value);
         const latestId = this.getItemId();
         this.type.value = { ...this.type.value, id: latestId };
