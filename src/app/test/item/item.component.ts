@@ -10,6 +10,8 @@ import {
 } from '@angular/core';
 import jsPDF from 'jspdf'; // js pdf
 import 'jspdf-autotable'; // pdf auto table
+import html2canvas from 'html2canvas';
+
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import {
   MatDialog,
@@ -31,7 +33,9 @@ export class ItemComponent implements OnInit {
   currentIndex: number = 0;
   updataData: string; // after update
   @Inject(MAT_DIALOG_DATA) public editData: any; //inject dialog data
-  @ViewChild('my-table', { static: false }) el!: ElementRef; //html table refference
+  // @ViewChild('my-table', { static: false }) el!: ElementRef; //html table refference
+  @ViewChild('mytable', { 'static': true }) mytable:ElementRef;
+
   noDiscountTotal: any;
   noDiscount: any;
   withDiscount: number;
@@ -106,16 +110,58 @@ export class ItemComponent implements OnInit {
       });
   }
   // create and view pdf
+  // onCreatePdf(action) {
+  //   var doc = new jsPDF();
+  //   (doc as any).autoTable({ html: '#mytable' });
+  //   // (doc as any).autoTable(columns, [this.typeTableBody]);
+  //   if (action == 'download') {
+  //     doc.save('sample.pdf');
+  //   } else {
+  //     doc.output('dataurlnewwindow');
+  //   }
+  // }
+
   onCreatePdf(action) {
-    var doc = new jsPDF();
-    (doc as any).autoTable({ html: '#my-table' });
-    // (doc as any).autoTable(columns, [this.typeTableBody]);
-    if (action == 'download') {
-      doc.save('sample.pdf');
-    } else {
-      doc.output('dataurlnewwindow');
-    }
+
+    const div = document.getElementsByTagName('tr');
+    const newDiv = Array.from(div).map((e)=> e.lastChild)
+    Array.from(newDiv).map((e)=> e.remove())
+    const final = document.getElementById('mytable');
+
+   
+  
+    const options = {
+      background: 'black',
+      scale: 3
+    };
+
+    html2canvas(final, options).then((canvas) => {
+      var img = canvas.toDataURL("image/PNG");
+      var doc = new jsPDF('l', 'mm', 'a4', true);
+      // Add image Canvas to PDF
+      const bufferX = 5;
+      const bufferY = 5;
+      const imgProps = (<any>doc).getImageProperties(img);
+      const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      doc.addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
+
+      return doc;
+    }).then((doc) => {
+     
+      if (action == 'download') {
+           doc.save('sample.pdf');
+           location.reload();
+           } else {
+            doc.output('dataurlnewwindow');
+            location.reload();
+          }    });
+          
   }
+
+
+
+
   noDiscountPrice() {
     let sum = 0;
     const oldRecord = localStorage.getItem('itemList');

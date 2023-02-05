@@ -194,3 +194,8 @@ tr:nth-child(even) {
     top: 18px;
     right: 35px;
 }
+
+#mytable2{
+    opacity: 1;
+   position: absolute;
+}
