@@ -3,23 +3,17 @@
 
   <div class="modal-content" style="width: 400px;">
     <form [formGroup]="type" style="display: flex; flex-direction: column;">
-      <mat-form-field appearance="fill">
-        <mat-label>Choose an option</mat-label>
-        <mat-select [(value)]="selected" formControlName="typeName" placeholder="Select Type">
-          <mat-option value="option1">Select Type</mat-option>
-          <mat-option *ngFor="let types of types" [value]="types">
-            {{types}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="typesControl.hasError('required')">Please choose a type</mat-error>
+      <input style="border: 1px solid rgb(213, 213, 213); padding: 10px 15px; border-radius: 5px;"
+        formControlName="productName" type="text" placeholder="Product name">
+      <div style="display: flex; gap: 15px;margin-top: 15px;">
+        <input style="width: 40%; border: 1px solid rgb(213, 213, 213); padding: 10px 15px; border-radius: 5px; "
+          formControlName="price" type="number" placeholder="Price" (keyup)="price($event)">
+        <input style=" width: 40%; border: 1px solid rgb(213, 213, 213); padding: 10px 15px; border-radius: 5px; "
+          formControlName="discount" type="number" placeholder="Discount" (keyup)="discounts($event)">
+      </div>
 
-      </mat-form-field>
-
-
-      <input style=" border: 1px solid rgb(213, 213, 213); padding: 10px 15px; border-radius: 5px; margin-top: 10px;"
-        formControlName="itemName" type="text" placeholder="Items Name">
-
-
+      <input style="margin-top: 15px; border: 1px solid rgb(213, 213, 213); padding: 10px 15px; border-radius: 5px; "
+        formControlName="total" type="number" placeholder="Total amount">
     </form>
     <!-- <p> {{error}}</p> -->
     <div style="margin-top: 20px;display: flex; gap: 10px;">

@@ -1,0 +1,99 @@
+
+.printView{
+    padding: 50px;
+    box-sizing: border-box;
+    width: 650px;
+
+}
+.info-logo{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+
+.info{
+    width: 70%;
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+    align-items: end;
+}
+
+.logo{
+ width: 30%;
+}
+.logo img{
+    width: 100%;
+}
+
+
+.invoice-info{
+    padding-top: 10px;
+    border-top: 1px solid gray;
+    display: flex;
+    justify-content: space-between;
+}
+.location{
+    width: 50%;
+}
+.details{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+table {
+    margin-top: 50px;
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td,
+th {
+    border: 1px solid #ededed;
+    text-align: left;
+    padding: 8px;
+    text-align: center;
+    position: relative;
+    width: 142px;
+    font-size: 14px;
+}
+
+tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+.main-th .divider::after {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: -9px;
+    width: 183px;
+    height: 1px;
+    background: #ececec;
+    transform: rotate(18deg);
+}
+
+.main-th {
+    height: 30px;
+    width: 142px;
+    overflow: hidden;
+    position: relative;
+
+
+}
+
+.main-th .bottom {
+    position: absolute;
+    bottom: 5px;
+    left: 20px;
+}
+
+.main-th .top {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+}

@@ -16,11 +16,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { PrintComponent } from './print/print.component';
 @NgModule({
   declarations: [
     ItemComponent,
     DialogElementsExampleDialog,
     ConfirmBoxDialogComponent,
+    PrintComponent,
   ],
   imports: [
     CommonModule,

@@ -155,8 +155,47 @@ th {
     text-align: left;
     padding: 8px;
     text-align: center;
+    position: relative;
+    width: 142px;
+    font-size: 16px;
 }
 
 tr:nth-child(even) {
     background-color: #f7f7f7;
+}
+
+.main-th .divider::after {
+    content: '';
+    position: absolute;
+    top: 37px;
+    left: -12px;
+    width: 116%;
+    height: 1px;
+    background: #ececec;
+    transform: rotate(21deg);
+}
+
+.main-th {
+    height: 57px;
+    width: 142px;
+    overflow: hidden;
+    position: relative;
+
+}
+
+.main-th .bottom {
+    position: absolute;
+    bottom: 18px;
+    left: 40px;
+}
+
+.main-th .top {
+    position: absolute;
+    top: 18px;
+    right: 35px;
+}
+
+#mytable2{
+    opacity: 1;
+   position: absolute;
 }

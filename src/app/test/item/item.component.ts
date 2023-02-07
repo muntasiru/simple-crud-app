@@ -1,3 +1,4 @@
+import { PrintComponent } from './../print/print.component';
 import { ItemConfigService } from './../service/item-config.service';
 import { ConfirmBoxDialogComponent } from './../common/confirm-box-dialog/confirm-box-dialog.component';
 import { ToastrService } from 'ngx-toastr';
@@ -8,8 +9,7 @@ import {
   Inject,
   ElementRef,
 } from '@angular/core';
-import jsPDF from 'jspdf'; // js pdf
-import 'jspdf-autotable'; // pdf auto table
+
 import { FormControl, Validators, FormBuilder } from '@angular/forms';
 import {
   MatDialog,
@@ -24,33 +24,63 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./item.component.css'],
 })
 export class ItemComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'typeName', 'itemName', 'action']; // table columns
-  typeTableBody: any = []; //all item list
+  displayedColumns: string[] = ['productName', 'price', 'discount', 'total']; // table columns
+  public typeTableBody: any = []; //all item list
   dataSource!: MatTableDataSource<any>;
   p: any = 1;
   currentIndex: number = 0;
   updataData: string; // after update
   @Inject(MAT_DIALOG_DATA) public editData: any; //inject dialog data
-  @ViewChild('my-table', { static: false }) el!: ElementRef; //html table refference
-  nextPage = false;
+  // @ViewChild('my-table', { static: false }) el!: ElementRef; //html table refference
+  @ViewChild('mytable', { static: true }) mytable: ElementRef;
 
-  constructor(public dialog: MatDialog, private toastr: ToastrService) {}
+  noDiscountTotal: any;
+  noDiscount: any;
+  withDiscount: number;
+  totalDiscount: number;
+
+  constructor(
+    public dialog: MatDialog,
+    private toastr: ToastrService,
+    private data: ItemConfigService
+  ) {}
   //dialog open
-  openDialog() {
-    this.dialog
-      .open(DialogElementsExampleDialog)
-      .afterClosed()
-      .subscribe(() => {
-        this.getAllItems();
-      });
+  openDialog(action) {
+    if (action == 'print') {
+      this.dialog
+        .open(PrintComponent)
+        .afterClosed()
+        .subscribe(() => {
+          this.getAllItems();
+        });
+      this.noDiscountPrice();
+      this.totalDiscountPrice();
+      this.withDiscountPrice();
+      this.data.changeTable(this.typeTableBody);
+      let obj = {
+        noDiscount: this.noDiscount,
+        withDiscount: this.withDiscount,
+        totalDiscount: this.totalDiscount,
+      };
+      this.data.changeTotal(obj);
+    } else {
+      this.dialog
+        .open(DialogElementsExampleDialog)
+        .afterClosed()
+        .subscribe(() => {
+          this.getAllItems();
+        });
+    }
   }
   ngOnInit(): void {
     const oldRecord = localStorage.getItem('itemList');
     if (oldRecord) {
-      this.typeTableBody = JSON.parse(oldRecord);
-      console.log(JSON.parse(oldRecord));
+      let finalData = JSON.parse(oldRecord);
+      this.typeTableBody = finalData;
     }
-    console.log(this.currentIndex);
+    this.noDiscountPrice();
+    this.totalDiscountPrice();
+    this.withDiscountPrice();
   }
   // get all item from local
   getAllItems() {
@@ -58,14 +88,16 @@ export class ItemComponent implements OnInit {
     if (oldRecord) {
       this.typeTableBody = JSON.parse(oldRecord);
     }
+    this.noDiscountPrice();
+    this.totalDiscountPrice();
+    this.withDiscountPrice();
   }
   //delete item
   handleDelete(row, i) {
-    console.log('dlt');
+    console.log('dlt', row);
     const dialogConfig = new MatDialogConfig();
-    console.log(dialogConfig);
     dialogConfig.data = {
-      confirmMessage: 'Are you sure you want to Delete?',
+      confirmMessage: `Are you sure you want to Delete ${row.productName}? `,
     };
     this.dialog
       .open(ConfirmBoxDialogComponent, {
@@ -99,15 +131,37 @@ export class ItemComponent implements OnInit {
       });
   }
   // create and view pdf
-  onCreatePdf(action) {
-    var doc = new jsPDF();
-    (doc as any).autoTable({ html: '#my-table' });
-    // (doc as any).autoTable(columns, [this.typeTableBody]);
-    if (action == 'download') {
-      doc.save('angular-demo.pdf');
-    } else {
-      doc.output('dataurlnewwindow');
-    }
+  // onCreatePdf(action) {
+  //   var doc = new jsPDF();
+  //   (doc as any).autoTable({ html: '#mytable' });
+  //   // (doc as any).autoTable(columns, [this.typeTableBody]);
+  //   if (action == 'download') {
+  //     doc.save('sample.pdf');
+  //   } else {
+  //     doc.output('dataurlnewwindow');
+  //   }
+  // }
+
+  noDiscountPrice() {
+    let sum = 0;
+    const oldRecord = localStorage.getItem('itemList');
+    let final = JSON.parse(oldRecord);
+    final.map((x) => (sum += x.price));
+    this.noDiscount = sum;
+  }
+  withDiscountPrice() {
+    let sum = 0;
+    const oldRecord = localStorage.getItem('itemList');
+    let final = JSON.parse(oldRecord);
+    final.map((x) => (sum += x.total));
+    this.withDiscount = sum;
+  }
+  totalDiscountPrice() {
+    let sum = 0;
+    const oldRecord = localStorage.getItem('itemList');
+    let final = JSON.parse(oldRecord);
+    final.map((x) => (sum += x.discount));
+    this.totalDiscount = sum;
   }
 }
 export interface PeriodicElement {
@@ -129,11 +183,12 @@ export class DialogElementsExampleDialog {
   type: any;
   typesControl = new FormControl(null, Validators.required);
   selectFormControl = new FormControl('', Validators.required);
-  types = ['Dog', 'Cat', 'Cow', 'Fox'];
+  types = ['Shirt', 'Pant', 'T-Shirt', 'Shoe'];
   typeTableBody = [];
   actionBtn: string = 'Save';
   modalHeader: string = 'Add configuration';
   error: string = '';
+  noDiscount: any[];
 
   constructor(
     public dialogRef: MatDialogRef<DialogElementsExampleDialog>,
@@ -144,14 +199,18 @@ export class DialogElementsExampleDialog {
   ) {}
   ngOnInit(): void {
     this.type = this.formBuilder.group({
-      typeName: ['', Validators.required],
-      itemName: ['', Validators.required],
+      productName: ['', Validators.required],
+      price: ['', Validators.required],
+      discount: ['', Validators.required],
+      total: ['', Validators.required],
     });
     if (this.editData) {
       this.actionBtn = 'Update';
       this.modalHeader = 'Update configuration';
-      this.type.controls['typeName'].setValue(this.editData.typeName);
-      this.type.controls['itemName'].setValue(this.editData.itemName);
+      this.type.controls['productName'].setValue(this.editData.productName);
+      this.type.controls['price'].setValue(this.editData.price);
+      this.type.controls['discount'].setValue(this.editData.discount);
+      this.type.controls['total'].setValue(this.editData.total);
     }
   }
   //get item
@@ -164,7 +223,7 @@ export class DialogElementsExampleDialog {
   //save item
   saveItemTypesData() {
     if (!this.editData) {
-      if (this.type.value.typeName && this.type.value.itemName) {
+      if (this.type.value.productName) {
         this.data.changeMessage(this.type.value);
         const latestId = this.getItemId();
         this.type.value = { ...this.type.value, id: latestId };
@@ -173,6 +232,7 @@ export class DialogElementsExampleDialog {
           timeOut: 2000,
         });
         const oldRecord = localStorage.getItem('itemList');
+
         if (oldRecord !== null) {
           const itemList = JSON.parse(oldRecord);
           itemList.push(this.type.value);
@@ -220,5 +280,15 @@ export class DialogElementsExampleDialog {
     } else {
       return 1;
     }
+  }
+  //dicount calculate
+  price(e) {
+    this.type.get('total').setValue(e.target.value);
+  }
+  discounts(e) {
+    var fee = this.type.get('price').value;
+    var discount = e.target.value;
+    var total = fee - discount;
+    this.type.get('total').setValue(total);
   }
 }
